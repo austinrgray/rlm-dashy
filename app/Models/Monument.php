@@ -10,14 +10,18 @@ class Monument extends Model
     use HasFactory;
 
     protected $fillable = [
-        'monument_id',
         'manufacturer',
         'inscription',
         'type',
         'color',
         'base_dimensions',
         'die_dimensions',
-        'foundation_dimensions'
+        'foundation_dimensions',
+        'is_installed',
+    ];
+
+    protected $casts = [
+        'is_installed' => 'boolean',
     ];
 
     public function order()

@@ -4,39 +4,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Contracts\Noteable;
+use App\Contracts\NoteableInterface;
+use App\Traits\Noteable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Invoice extends Model implements Noteable
+class Invoice extends Model implements NoteableInterface
 {
-    use HasFactory;
+    use HasFactory, Noteable;
 
     protected $fillable = [
-        'order_id',
-        'invoice_number',
         'total_amount',
         'remaining_balance',
-        'invoiced_date',
+        'invoice_date',
         'payment_date',
         'payment_status',
     ];
-
-    public function order()
-    {
-        return $this->belongsTo(Order::class);
-    }
 
     public function invoiceable()
     {
         return $this->morphTo();
     }
 
-    public function createNote(array $noteDetails): Note
+    public function monuments(): HasMany
     {
-        // Logic to create a new note
-        $note = new Note();
-        $note->fill($noteDetails);
-        $note->save();
-
-        return $note;
+        return $this->hasMany(Monument::class);
     }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
+
 }

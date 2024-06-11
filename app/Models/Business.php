@@ -4,119 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Contracts\Contactable;
-use App\Contracts\Invoiceable;
-use App\Contracts\Noteable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Business extends Model implements Contactable, Invoiceable, Noteable
+use App\Contracts\ContactableInterface;
+use App\Contracts\InvoiceableInterface;
+use App\Contracts\NoteableInterface;
+use App\Traits\Contactable;
+use App\Traits\Invoiceable;
+use App\Traits\Noteable;
+
+
+class Business extends Model implements ContactableInterface, InvoiceableInterface, NoteableInterface
 {
-    use HasFactory;
+    use HasFactory, Contactable, Invoiceable, Noteable;
 
-    protected $fillable = [
-        'business_id',
-    ];
+    protected $fillable = ['name'];
 
-    public function primaryContact(): HasOne
+    public function families(): BelongsToMany
     {
-        return $this->hasOne(Customer::class);
+        return $this->belongsToMany(Family::class);
     }
 
-    public function family()
-    {
-        return $this->belongsTo(Family::class);
-    }
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
-    }
-
-    public function invoices(): HasMany
-    {
-        return $this->hasMany(Invoice::class);
-    }
-
-    public function notes(): HasMany
-    {
-        return $this->hasMany(Note::class);
-    }
-
-    public function createInvoice(array $invoiceDetails): Invoice
-    {
-        // Logic to create a new note
-        $invoice = new Invoice();
-        $invoice->fill($invoiceDetails);
-        $invoice->save();
-
-        return $invoice;
-    }
-
-    public function createNote(array $noteDetails): Note
-    {
-        // Logic to create a new note
-        $note = new Note();
-        $note->fill($noteDetails);
-        $note->save();
-
-        return $note;
-    }
-
-    public function getFirstName(): ?string
-    {
-        return null; // Null for businesses
-    }
-
-    public function getMiddleName(): ?string
-    {
-        return null; // Null for businesses
-    }
-
-    public function getLastName(): ?string
-    {
-        return null; // Null for businesses
-    }
-
-    public function getBusinessName(): ?string
-    {
-        return $this->business_name;
-    }
-
-    public function getMailingAddress(): ?string
-    {
-        return $this->mailing_address;
-    }
-
-    public function getMailingCity(): ?string
-    {
-        return $this->mailing_city;
-    }
-
-    public function getMailingState(): ?string
-    {
-        return $this->mailing_state;
-    }
-
-    public function getMailingZip(): ?string
-    {
-        return $this->mailing_zip;
-    }
-
-    public function getPhonePrimary(): ?string
-    {
-        return $this->phone_primary;
-    }
-
-    public function getPhoneSecondary(): ?string
-    {
-        return $this->phone_secondary;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-    
 }

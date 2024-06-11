@@ -7,15 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Contracts\Noteable;
+use App\Contracts\NoteableInterface;
+use App\Traits\Noteable;
 
-class Order extends Model implements Noteable
+class Order extends Model implements NoteableInterface
 {
-    use HasFactory;
+    use HasFactory, Noteable;
 
     protected $fillable = [
-        'user_id',
-        'invoice_id',
         'destination',
         'status',
         'ordered_date',
@@ -24,19 +23,9 @@ class Order extends Model implements Noteable
         'date_installed',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function contactable()
+    public function invoiceable(): BelongsTo
     {
         return $this->morphTo();
-    }
-    
-    public function invoice(): HasOne
-    {
-        return $this->hasOne(Invoice::class);
     }
 
     public function monuments(): HasMany
@@ -44,18 +33,8 @@ class Order extends Model implements Noteable
         return $this->hasMany(Monument::class);
     }
 
-    public function notes(): HasMany
+    public function user(): BelongsTo
     {
-        return $this->hasMany(Note::class);
-    }
-
-    public function createNote(array $noteDetails): Note
-    {
-        // Logic to create a new note
-        $note = new Note();
-        $note->fill($noteDetails);
-        $note->save();
-
-        return $note;
+        return $this->belongsTo(User::class);
     }
 }

@@ -7,52 +7,55 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Contracts\Contactable;
-use App\Contracts\Invoiceable;
-use App\Contracts\Noteable;
+
+use App\Contracts\ContactableInterface;
+use App\Contracts\InvoiceableInterface;
+use App\Contracts\NoteableInterface;
+use App\Traits\Contactable;
+use App\Traits\Invoiceable;
+use App\Traits\Noteable;
 
 use App\Models\Customer;
 use App\Models\Business;
 
 
 
-class Family extends Model implements Noteable
+class Family extends Model implements ContactableInterface, InvoiceableInterface, NoteableInterface
 {
-    use HasFactory;
+    use HasFactory, Contactable, Invoiceable, Noteable;
 
     protected $fillable = [
-        'family_id',
         'family_name',
     ];
-
-    public function primaryContact(): HasOne
-    {
-        return $this->hasOne(Customer::class);
-    }
 
     public function members(): HasMany
     {
         return $this->hasMany(Customer::class);
     }
 
-    public function businesses()
+    public function businesses(): HasMany
     {
         return $this->hasMany(Business::class);
     }
 
-    public function notes(): HasMany
+    public function addMember(Customer $member)
     {
-        return $this->hasMany(Note::class);
+        return $this->members()->save($member);
     }
 
-    public function createNote(array $noteDetails): Note
+    public function addBusiness(Business $business)
     {
-        // Logic to create a new note
-        $note = new Note();
-        $note->fill($noteDetails);
-        $note->save();
+        return $this->businesses()->save($business);
+    }
 
-        return $note;
+    public function removeMember(Customer $member)
+    {
+        return $member->delete();
+    }
+
+    public function removeBusiness(Business $business)
+    {
+        return $business->delete();
     }
     
 }

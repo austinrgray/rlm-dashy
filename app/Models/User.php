@@ -14,6 +14,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'first_name',
+        'middle_name',
         'last_name',
         'email',
         'phone',
@@ -35,25 +36,19 @@ class User extends Authenticatable
         ];
     }
 
-    public function orders(): HasMany{
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    public function orders(): HasMany
+    {
         return $this->hasMany(Order::class);
     }
 
-    public function notes(): HasMany{
+    public function notes(): HasMany
+    {
         return $this->hasMany(Note::class);
     }
 
-    /*
-    public function tasks(): HasMany{
-        return $this->hasMany(Task::class);
-    }
-
-    expand on the actual model. You know it can relate to businesses, other customers, and leads. Also provide the traits you think appropriate for such a model
-    */
-
-    /*
-    public function contactRecords(): HasMany{
-        return $this->hasMany(ContactRecords::class);
-    }
-    */
 }
