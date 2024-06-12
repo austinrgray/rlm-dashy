@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->decimal('total_amount', 10, 2);
+            $table->decimal('remaining_balance', 10, 2);
+            $table->date('invoice_date');
+            $table->date('payment_date')->nullable();
+            $table->string('payment_status');
+            $table->morphs('invoiceable');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

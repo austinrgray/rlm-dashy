@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->string('destination');
+            $table->string('status');
+            $table->date('ordered_date');
+            $table->date('date_shipped')->nullable();
+            $table->date('date_arrived')->nullable();
+            $table->date('date_installed')->nullable();
+            $table->morphs('invoiceable');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

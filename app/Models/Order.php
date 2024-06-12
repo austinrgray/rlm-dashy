@@ -37,4 +37,9 @@ class Order extends Model implements NoteableInterface
     {
         return $this->belongsTo(User::class);
     }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }
